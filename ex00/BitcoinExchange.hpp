@@ -19,6 +19,7 @@
 #  include <string>
 #  include <map>
 #  include <exception>
+#  include <cstdlib>
 
 class BitcoinExchange{
 	private:

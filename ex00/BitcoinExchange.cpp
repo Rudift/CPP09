@@ -45,7 +45,18 @@ void	BitcoinExchange::loadDatabase(std::string path){
 
 //Non-member fonctions
 
-bool isLineValid(std::string line){
-	
+// bool isLineValid(std::string line){
+
+// }
+
+float	stringToFloat(std::string line){
+	std::string::size_type	pos = line.find(',');
+	if (pos != std::string::npos){
+		std::string	float_str = line.substr(pos + 1);
+		
+		float value = static_cast<float>(atof(float_str.c_str()));
+		return(value);
+	}
+	throw std::invalid_argument("Error : wrong value format");
 }
 
