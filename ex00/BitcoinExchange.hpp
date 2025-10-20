@@ -20,6 +20,7 @@
 #  include <map>
 #  include <exception>
 #  include <cstdlib>
+#  include <stdlib.h>
 
 class BitcoinExchange{
 	private:
@@ -33,7 +34,8 @@ class BitcoinExchange{
 		void	loadDatabase(std::string path);
 };
 
-bool	isLineValid(std::string line);
+bool	isValidDate(std::string date);
+bool	isValidExt(std::string date);
 float	stringToFloat(std::string line);
 
 #endif
