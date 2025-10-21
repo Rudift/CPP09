@@ -31,7 +31,7 @@ BitcoinExchange::~BitcoinExchange(){}
 //Member fonctions
 
 void	BitcoinExchange::loadDatabase(std::string path){
-	if (!isValidExt(path))
+	if (!isValidExt(path, "csv"))
 		throw std::invalid_argument("Error: wrong file extension");
 	std::ifstream file(path.c_str());
 	if (!file){
@@ -44,7 +44,7 @@ void	BitcoinExchange::loadDatabase(std::string path){
 		std::cout << line << std::endl;
 		size_t separator = line.find(',');
 		std::string date = line.substr(0, separator);
-		double rate = atof (line.substr(separator + 1).c_str());
+		float rate = atof (line.substr(separator + 1).c_str());
 		_data[date] = rate;
 	}
 	file.close();
@@ -54,26 +54,35 @@ void	BitcoinExchange::loadDatabase(std::string path){
 	// }
 }
 
-// void	BitcoinExchange::loadDatabase(std::string path){
-// 	if (!isValidExt(path))
-// 		throw std::invalid_argument("Error: wrong file extension");
-// 	std::ifstream file(path.c_str());
-// 	if (!file){
-// 		throw std::invalid_argument(path + " not found");
-// 	}
-// 	std::cout << GREEN << path << " is open !" + RESET << std::endl;
-// 	std::string	line;
-// 	std::getline(file, line);
-// 	while (std::getline(file, line)){
-// 		std::cout << line << std::endl;
-// 		size_t separator = line.find(',');
-// 		if (!isValidDate(line.substr(0, 10)))
-// 			throw std::invalid_argument("Error: bad input => " + line.substr(0, 10));
-// 		else
-// 			std::cout << "good" << std::endl;
-// 	}
-// 	file.close();
-// }
+void	BitcoinExchange::loadInput(std::string path){
+	if (!isValidExt(path, "txt")) // Verification of the extension of the file
+		throw std::invalid_argument("Error: wrong file extension"); 
+
+	std::ifstream file(path.c_str());
+	if (!file)
+		throw std::invalid_argument(path + " not found");
+	
+	std::cout << GREEN << path << " is open !" + RESET << std::endl;
+	std::string	line;
+	std::getline(file, line);
+	while (std::getline(file, line)){
+		std::cout << line << std::endl;
+		size_t separator = line.find('!');
+		if (separator == line.npos){
+			throw std::invalid_argument("Error: invalid line");
+			continue;
+		}
+		if (!isValidDate(line.substr(0, separator - 1)))
+			throw std::invalid_argument("Error: bad input => " + line.substr(0, 10));
+			continue;
+		std::string strValue = line.substr(separator + 2);
+		float value = atof(strValue.c_str());
+		if (!isValidValue(value))
+			continue;
+		
+	}
+	file.close();
+}
 
 //Non-member fonctions
 
@@ -92,21 +101,31 @@ bool isValidDate(std::string date){
 	if (month > 12 || month < 1)
 		return (false);
 	int endDay [13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-	if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)){
+	if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
 		endDay[2] = 29;
-		std::cout << YELLOW + "ANNEE BISEXTILLE" + RESET << std::endl;
-	}
 	if (day > endDay[month] || day < 1)
 		return (false);
 	return (true);
 }
 
-bool isValidExt(std::string path){
+bool isValidExt(std::string path, std::string ref){
 	if (!(path.size() >= 3))
 		return (false);
 	std::string ext = path.substr(path.size() - 3);
-	if (ext != "txt" && ext != "csv")
+	if (ext != ref)
 		return (false);
+	return (true);
+}
+
+bool isValidValue(float value){
+	if (value < 0){
+		std::cerr << RED + "Error: not a positive number" + RESET << std::endl;
+		return (false);
+	}
+	if (value > 1000){
+		std::cerr << RED + "Error: too large number" + RESET << std::endl;
+		return (false);
+	}
 	return (true);
 }
 

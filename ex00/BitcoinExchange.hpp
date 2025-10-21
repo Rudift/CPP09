@@ -32,11 +32,12 @@ class BitcoinExchange{
 		BitcoinExchange& operator=(const BitcoinExchange &other);
 		~BitcoinExchange();
 		void	loadDatabase(std::string path);
+		void	loadInput(std::string path);
 };
 
-bool	isValidExt(std::string ext);
+bool	isValidExt(std::string ext, std::string ref);
 bool	isValidDate(std::string date);
-// bool	isValidValue(std::string value);
+bool	isValidValue(float value);
 float	stringToFloat(std::string line);
 
 #endif
