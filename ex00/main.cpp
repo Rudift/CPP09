@@ -22,12 +22,11 @@ int	main(int ac, char **av){
 	BitcoinExchange data;
 	BitcoinExchange	target;
 	try{
-		//data.loadDatabase("data.csv");
-		target.loadDatabase(av[1]);
-		float caca = stringToFloat("gros caca ,3.14");
-		std::cout << caca << std::endl;
+		data.loadDatabase("data.csv");
+		//target.loadDatabase(av[1]);
 	}catch (std::exception &e){
 		std::cout << RED + e.what() + RESET << std::endl;
 	}
+
 	return (0);
 }

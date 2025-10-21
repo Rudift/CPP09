@@ -39,15 +39,41 @@ void	BitcoinExchange::loadDatabase(std::string path){
 	}
 	std::cout << GREEN << path << " is open !" + RESET << std::endl;
 	std::string	line;
+	std::getline(file, line);
 	while (std::getline(file, line)){
 		std::cout << line << std::endl;
-		if (!isValidDate(line.substr(0, 10)))
-			throw std::invalid_argument("Error: bad input => " + line.substr(0, 10));
-		else
-			std::cout << "good" << std::endl;
+		size_t separator = line.find(',');
+		std::string date = line.substr(0, separator);
+		double rate = atof (line.substr(separator + 1).c_str());
+		_data[date] = rate;
 	}
 	file.close();
+	std::cout << GREEN + "Database successfully loaded" + RESET << std::endl;
+	// for (std::map<std::string, float>::iterator it = _data.begin(); it != _data.end(); ++it){
+	// 	 std::cout << "Clé : " << it->first << " -> Valeur : " << it->second << std::endl;
+	// }
 }
+
+// void	BitcoinExchange::loadDatabase(std::string path){
+// 	if (!isValidExt(path))
+// 		throw std::invalid_argument("Error: wrong file extension");
+// 	std::ifstream file(path.c_str());
+// 	if (!file){
+// 		throw std::invalid_argument(path + " not found");
+// 	}
+// 	std::cout << GREEN << path << " is open !" + RESET << std::endl;
+// 	std::string	line;
+// 	std::getline(file, line);
+// 	while (std::getline(file, line)){
+// 		std::cout << line << std::endl;
+// 		size_t separator = line.find(',');
+// 		if (!isValidDate(line.substr(0, 10)))
+// 			throw std::invalid_argument("Error: bad input => " + line.substr(0, 10));
+// 		else
+// 			std::cout << "good" << std::endl;
+// 	}
+// 	file.close();
+// }
 
 //Non-member fonctions
 
@@ -65,7 +91,12 @@ bool isValidDate(std::string date){
 		return (false);
 	if (month > 12 || month < 1)
 		return (false);
-	if (day > 31 || day < 1)
+	int endDay [13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)){
+		endDay[2] = 29;
+		std::cout << YELLOW + "ANNEE BISEXTILLE" + RESET << std::endl;
+	}
+	if (day > endDay[month] || day < 1)
 		return (false);
 	return (true);
 }
