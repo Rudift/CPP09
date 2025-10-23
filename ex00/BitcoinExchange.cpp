@@ -72,7 +72,7 @@ void	BitcoinExchange::handleInput(std::string path){
 
 		std::string date = line.substr(0, separator - 1);
 		if (!isValidDate(date)){
-			throw std::invalid_argument("Error: bad input => " + line.substr(0, 10));
+			std::cerr << RED +"Error: bad input => " << line.substr(0, 10) << RESET << std::endl;
 			continue;
 		}
 		std::string strValue = line.substr(separator + 2);
