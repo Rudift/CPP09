@@ -29,10 +29,9 @@ BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange &other){
 BitcoinExchange::~BitcoinExchange(){}
 
 //Member fonctions
-
 void	BitcoinExchange::loadDatabase(std::string path){
 	if (!isValidExt(path, "csv"))
-		throw std::invalid_argument("Error: wrong file extension");
+		throw std::invalid_argument("Error: wrong file extension.");
 	std::ifstream file(path.c_str());
 	if (!file){
 		throw std::invalid_argument(path + " not found");
@@ -41,7 +40,6 @@ void	BitcoinExchange::loadDatabase(std::string path){
 	std::string	line;
 	std::getline(file, line);
 	while (std::getline(file, line)){
-		std::cout << line << std::endl;
 		size_t separator = line.find(',');
 		std::string date = line.substr(0, separator);
 		float rate = atof (line.substr(separator + 1).c_str());
@@ -54,34 +52,51 @@ void	BitcoinExchange::loadDatabase(std::string path){
 	// }
 }
 
-void	BitcoinExchange::loadInput(std::string path){
+void	BitcoinExchange::handleInput(std::string path){
 	if (!isValidExt(path, "txt")) // Verification of the extension of the file
-		throw std::invalid_argument("Error: wrong file extension"); 
+		throw std::invalid_argument("Error: wrong file extension."); 
 
 	std::ifstream file(path.c_str());
 	if (!file)
-		throw std::invalid_argument(path + " not found");
+		throw std::invalid_argument("Error: could not open file.");
 	
 	std::cout << GREEN << path << " is open !" + RESET << std::endl;
 	std::string	line;
 	std::getline(file, line);
 	while (std::getline(file, line)){
-		std::cout << line << std::endl;
-		size_t separator = line.find('!');
-		if (separator == line.npos){
-			throw std::invalid_argument("Error: invalid line");
-			continue;
-		}
-		if (!isValidDate(line.substr(0, separator - 1)))
+		size_t separator = line.find('|');
+		// if (separator == line.npos){
+		// 	throw std::invalid_argument("Error: invalid line.");
+		// 	continue;
+		// }
+
+		std::string date = line.substr(0, separator - 1);
+		if (!isValidDate(date)){
 			throw std::invalid_argument("Error: bad input => " + line.substr(0, 10));
 			continue;
+		}
 		std::string strValue = line.substr(separator + 2);
 		float value = atof(strValue.c_str());
 		if (!isValidValue(value))
 			continue;
-		
+		std::cout << date << " => " << value << " = " << value * getRate(date) << std::endl;
 	}
 	file.close();
+}
+
+float	BitcoinExchange::getRate(std::string date){
+	std::map<std::string, float>::const_iterator it = _data.lower_bound(date);
+
+	//Case 1 : the date exist
+	if (it != _data.end() && it->first == date)
+		return it->second;
+
+	//Case 2: lower_bound get back the first supperior date
+	if (it == _data.begin()){
+		throw std::runtime_error("Error: no exploitable date");
+	}
+	--it;
+	return it->second;
 }
 
 //Non-member fonctions
@@ -119,11 +134,11 @@ bool isValidExt(std::string path, std::string ref){
 
 bool isValidValue(float value){
 	if (value < 0){
-		std::cerr << RED + "Error: not a positive number" + RESET << std::endl;
+		std::cerr << RED + "Error: not a positive number." + RESET << std::endl;
 		return (false);
 	}
 	if (value > 1000){
-		std::cerr << RED + "Error: too large number" + RESET << std::endl;
+		std::cerr << RED + "Error: too large number." + RESET << std::endl;
 		return (false);
 	}
 	return (true);

@@ -32,7 +32,8 @@ class BitcoinExchange{
 		BitcoinExchange& operator=(const BitcoinExchange &other);
 		~BitcoinExchange();
 		void	loadDatabase(std::string path);
-		void	loadInput(std::string path);
+		void	handleInput(std::string path);
+		float	getRate(std::string date);
 };
 
 bool	isValidExt(std::string ext, std::string ref);

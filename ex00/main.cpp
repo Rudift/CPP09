@@ -15,15 +15,14 @@
 int	main(int ac, char **av){
 	(void) av;
 	if (ac != 2){
-		std::cout << RED + "Usage : ./btc <filePath>" + RESET << std::endl;
+		std::cout << RED + "Error: could not open file." + RESET << std::endl;
 		return (0);
 	}
 
 	BitcoinExchange data;
-	BitcoinExchange	target;
 	try{
 		data.loadDatabase("data.csv");
-		//target.loadDatabase(av[1]);
+		data.handleInput(av[1]);
 	}catch (std::exception &e){
 		std::cout << RED + e.what() + RESET << std::endl;
 	}
