@@ -39,6 +39,5 @@ class BitcoinExchange{
 bool	isValidExt(std::string ext, std::string ref);
 bool	isValidDate(std::string date);
 bool	isValidValue(float value);
-float	stringToFloat(std::string line);
 
 #endif

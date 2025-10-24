@@ -47,9 +47,6 @@ void	BitcoinExchange::loadDatabase(std::string path){
 	}
 	file.close();
 	std::cout << GREEN + "Database successfully loaded" + RESET << std::endl;
-	// for (std::map<std::string, float>::iterator it = _data.begin(); it != _data.end(); ++it){
-	// 	 std::cout << "Clé : " << it->first << " -> Valeur : " << it->second << std::endl;
-	// }
 }
 
 void	BitcoinExchange::handleInput(std::string path){
@@ -154,16 +151,5 @@ bool isValidValue(float value){
 		return (false);
 	}
 	return (true);
-}
-
-float	stringToFloat(std::string line){
-	std::string::size_type	pos = line.find(',');
-	if (pos != std::string::npos){
-		std::string	float_str = line.substr(pos + 1);
-		
-		float value = static_cast<float>(atof(float_str.c_str()));
-		return(value);
-	}
-	throw std::invalid_argument("Error: wrong value format");
 }
 
