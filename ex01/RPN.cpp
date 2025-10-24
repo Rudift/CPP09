@@ -36,7 +36,6 @@ int		doOperation(int a, int b, char op){
 	int i = 0;
 	while (op != operators[i])
 		i++;
-	std::cout << GREEN + "do " + op + RESET << std::endl; 
 	switch (i){
 		case 0:
 			return (a + b);
@@ -53,7 +52,6 @@ int		doOperation(int a, int b, char op){
 
 
 void	printStack(std::stack<int> s){
-	std::cout << YELLOW + "Content of the stack from top to down" + RESET << std::endl;
 	while (!s.empty()){
 		std::cout << s.top() << std::endl;
 		s.pop();

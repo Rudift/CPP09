@@ -20,7 +20,7 @@ int	main(int ac, char **av){
 	std::stack<int>	rpn;
 	try{
 		parsing(rpn, av[1]);
-		printStack(rpn);
+		std::cout << rpn.top() << std::endl;
 	}catch(std::exception &e){
 		std::cerr << RED << e.what() << RESET << std::endl;
 	}
