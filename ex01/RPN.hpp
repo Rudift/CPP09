@@ -20,17 +20,8 @@
 #include <exception>
 #include "Colors.hpp"
 
-void	dispatch(std::stack<unsigned int> &numbers, std::stack<char> &operators, char **av);
-bool	isOperator(char c);
-
-template<typename T>
-void	printStack(std::stack<T> s){
-	std::cout << YELLOW + "Content of the stack from top to down" + RESET << std::endl;
-	while (!s.empty()){
-		std::cout << "caca" << std::endl;
-		std::cout << s.top() << std::endl;
-		s.pop();
-	}
-}
+void	parsing (std::stack<int> &rpn, char *av);
+int		doOperation(int a, int b, char op);
+void	printStack(std::stack<int> s);
 
 #endif

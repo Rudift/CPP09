@@ -12,20 +12,50 @@
 
 #include "RPN.hpp"
 
-void	dispatch(std::stack<unsigned int> &numbers, std::stack<char> &operators, char **av){
-	for(int i = 1 ; av[1][i]; i++){
-		if (std::isdigit(av[1][i])){
-			numbers.push(av[1][i] - 48);
+void	parsing (std::stack<int> &rpn, char *arg){
+	for (int i = 0; arg[i]; i++){
+		if (std::isdigit(arg[i])){
+			if (std::isdigit(arg[i + 1]))
+				throw std::invalid_argument("Error: only number between 0 and 9 include are autorized");
+			rpn.push(arg[i] - 48);
 		}
-		else if (isOperator(av[1][i]))
-			operators.push(av[1][i]);
-		else if (av[1][i] == ' ')
+		else if (arg[i] == ' ')
 			continue;
-		else
-			throw std::invalid_argument("Error: the operation contain an invalid character");
+		else{
+			if (rpn.size() < 2)
+				throw std::invalid_argument("Error: wrong syntaxe.");
+			int b = rpn.top(); rpn.pop();
+			int a = rpn.top(); rpn.pop();
+			rpn.push(doOperation(a, b, arg[i]));
+		}
 	}
 }
 
-bool	isOperator(char c){
-	return (c == '+' || c == '-' || c == '*' || c == '/');
+int		doOperation(int a, int b, char op){
+	char operators[4] = {'+', '-', '*', '/'};
+	int i = 0;
+	while (op != operators[i])
+		i++;
+	std::cout << GREEN + "do " + op + RESET << std::endl; 
+	switch (i){
+		case 0:
+			return (a + b);
+		case 1:
+			return (a - b);
+		case 2:
+			return (a * b);
+		case 3:
+			return (a / b);
+		default:
+			throw std::invalid_argument("Error: Wrong syntaxe.");
+	}
+}
+
+
+void	printStack(std::stack<int> s){
+	std::cout << YELLOW + "Content of the stack from top to down" + RESET << std::endl;
+	while (!s.empty()){
+		std::cout << s.top() << std::endl;
+		s.pop();
+	}
 }

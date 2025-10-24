@@ -17,11 +17,10 @@ int	main(int ac, char **av){
 		std::cerr << RED + "<Usage>: ./RPN \"your operation in RPN\"" + RESET << std::endl;
 		return (-1);
 	}
-	std::stack<unsigned int>	numbers;
-	std::stack<char>			operators;
+	std::stack<int>	rpn;
 	try{
-		dispatch(numbers, operators, av);
-		printStack(numbers);
+		parsing(rpn, av[1]);
+		printStack(rpn);
 	}catch(std::exception &e){
 		std::cerr << RED << e.what() << RESET << std::endl;
 	}
