@@ -13,7 +13,7 @@
 #include "RPN.hpp"
 
 int	main(int ac, char **av){
-	if (ac != 2){
+	if (ac != 2 || av[1][0] == '\0'){
 		std::cerr << RED + "<Usage>: ./RPN \"your operation in RPN\"" + RESET << std::endl;
 		return (-1);
 	}
