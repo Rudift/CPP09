@@ -16,7 +16,7 @@ void	parsing (std::stack<int> &rpn, char *arg){
 	for (int i = 0; arg[i]; i++){
 		if (std::isdigit(arg[i])){
 			if (std::isdigit(arg[i + 1]))
-				throw std::invalid_argument("Error: only number between 0 and 9 include are autorized");
+				throw std::invalid_argument("Error: only number between 0 and 9 include are autorized.");
 			rpn.push(arg[i] - 48);
 		}
 		else if (arg[i] == ' ')
