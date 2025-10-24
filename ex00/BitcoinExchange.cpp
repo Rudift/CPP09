@@ -65,21 +65,33 @@ void	BitcoinExchange::handleInput(std::string path){
 	std::getline(file, line);
 	while (std::getline(file, line)){
 		size_t separator = line.find('|');
-		// if (separator == line.npos){
-		// 	throw std::invalid_argument("Error: invalid line.");
-		// 	continue;
-		// }
+		if (separator == line.npos){
+			std::cerr << RED + "Error: bad input => " << line << RESET << std::endl;
+			continue;
+		}
+		if (separator == 0){
+			std::cerr << RED + "Error: bad input => " << line << RESET << std::endl;
+			continue;
+		}
 
 		std::string date = line.substr(0, separator - 1);
 		if (!isValidDate(date)){
-			std::cerr << RED +"Error: bad input => " << line.substr(0, 10) << RESET << std::endl;
+			std::cerr << RED +"Error: bad input => " << line.substr(0, std::min(static_cast<size_t>(10), line.length())) << RESET << std::endl;
+			continue;
+		}
+		if (separator + 2 >= line.length()){
+			std::cerr << RED + "Error: bad input => " << line << RESET << std::endl;
 			continue;
 		}
 		std::string strValue = line.substr(separator + 2);
 		float value = atof(strValue.c_str());
 		if (!isValidValue(value))
 			continue;
-		std::cout << date << " => " << value << " = " << value * getRate(date) << std::endl;
+		try {
+			std::cout << date << " => " << value << " = " << value * getRate(date) << std::endl;
+		} catch (const std::runtime_error& e) {
+			std::cerr << RED << e.what() << RESET << std::endl;
+		}
 	}
 	file.close();
 }
