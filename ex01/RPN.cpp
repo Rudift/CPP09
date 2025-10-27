@@ -44,6 +44,8 @@ int		doOperation(int a, int b, char op){
 		case 2:
 			return (a * b);
 		case 3:
+			if (b == 0)
+				throw std::invalid_argument("Error: division by zero is forbidden");
 			return (a / b);
 		default:
 			throw std::invalid_argument("Error: Wrong syntaxe.");
