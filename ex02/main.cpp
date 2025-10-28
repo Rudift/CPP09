@@ -12,18 +12,43 @@
 
 #include "PmergeMe.hpp"
 
+bool isPositiv(char **av){
+	for (int i = 1 ; av[i] ; i++){
+		if (atoi(av[i]) < 0){
+			std::cerr << RED + "Error: there is a negative number in the list" + RESET << std::endl;
+			return(false);
+		}
+	}
+	return (true);
+}
+
+bool isNum(char **av){
+	for (int i = 1 ; av[i] ; i++){
+		std::string str = av[i];
+		for (size_t j = 0; j < str.length(); j++){
+			if (!std::isdigit(str[j])){
+				std::cerr << RED + "Error: there is a non-numeric character in the list" + RESET << std::endl;
+				return(false);
+			}
+		}
+	}
+	return (true);
+}
+
 int	main(int ac, char **av){
 	if (ac < 2){
 		std::cerr << RED + "Error: too few arguments." + RESET << std::endl;
 		return (-1);
 	}
-	std::list<int>	list;
-	for (int i = 1 ; av[i] ; i++){
-		if (atoi(av[i]) < 0){
-			std::cerr << RED + "Error: ther is a negativ number in the list" + RESET << std::endl;
-			return(-1);
-		}
-		list.push_back(atoi(av[i]));
+	std::vector<int>	vect;
+	if (!isPositiv(av) || !isNum(av))
+		return (-1);
+	
+	// Remplir le vecteur avec les arguments
+	for (int i = 1; i < ac; i++){
+		vect.push_back(atoi(av[i]));
 	}
-	std::cout << "Before: " << list << std::endl;
+	
+	std::cout << "Before: " << vect << std::endl;
+	return (0);
 }

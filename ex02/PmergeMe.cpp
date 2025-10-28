@@ -12,14 +12,40 @@
 
 #include "PmergeMe.hpp"
 
-std::ostream&	operator<<(std::ostream& os, const std::list<int>& list){
-	for (std::list<int>::const_iterator it = list.begin(); it != list.end(); ++it){
-		os << *it;
-		std::list<int>::const_iterator next = it;
-		++next;
-		if (next != list.end())
-			os << " ";
+bool	isDigit(std::string s){
+	for (size_t i = 0; i < s.size(); i++){
+		if (!isdigit(s[i]))
+			return false;
 	}
-	return os;
+	return true;
 }
 
+// Implémentation de l'opérateur << pour std::vector<int>
+std::ostream& operator<<(std::ostream& os, const std::vector<int>& container){
+	std::vector<int>::const_iterator it = container.begin();
+	std::vector<int>::const_iterator end = container.end();
+	
+	while (it != end)
+	{
+		os << *it;
+		++it;
+		if (it != end)
+			os << " ";
+	}
+	return (os);
+}
+
+// Implémentation de l'opérateur << pour std::deque<int>
+std::ostream& operator<<(std::ostream& os, const std::deque<int>& container){
+	std::deque<int>::const_iterator it = container.begin();
+	std::deque<int>::const_iterator end = container.end();
+	
+	while (it != end)
+	{
+		os << *it;
+		++it;
+		if (it != end)
+			os << " ";
+	}
+	return (os);
+}

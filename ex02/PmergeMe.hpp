@@ -16,22 +16,20 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <list>
+#include <vector>
 #include <deque>
 #include <cctype>
+#include <ctime>
 #include "Colors.hpp"
 
 
 //Parsing
-bool	isDigit(std::string s){
-	for (int i = 0; i < s.size(); i++){
-		if (!isdigit(s[i]))
-			return false;
-	}
-	return true;
-}
+bool	isDigit(std::string s);
 
-//Insertion overload
-std::ostream&	operator<<(std::ostream& os, const std::list<int>& list); 
+// Surcharge spécifique pour std::vector<int>
+std::ostream& operator<<(std::ostream& os, const std::vector<int>& container);
+
+// Surcharge spécifique pour std::deque<int>
+std::ostream& operator<<(std::ostream& os, const std::deque<int>& container);
 
 #endif
