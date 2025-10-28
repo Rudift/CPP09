@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <stack>
 #include <exception>
+#include <limits>
 #include "Colors.hpp"
 
 void	parsing (std::stack<int> &rpn, char *av);
