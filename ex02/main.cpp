@@ -12,43 +12,45 @@
 
 #include "PmergeMe.hpp"
 
-bool isPositiv(char **av){
-	for (int i = 1 ; av[i] ; i++){
-		if (atoi(av[i]) < 0){
-			std::cerr << RED + "Error: there is a negative number in the list" + RESET << std::endl;
-			return(false);
+std::vector<int>	parsing(int ac, char **av){
+	std::vector<int> vect;
+	for (int i = 1 ; i < ac ; i++){
+		for (size_t j = 0 ; av[i][j] != '\0' ; j++){
+			if (!std::isdigit(av[i][j]))
+				throw std::invalid_argument("Error");
 		}
+		vect.push_back(atoi(av[i]));
 	}
-	return (true);
+	return (vect);
 }
 
-bool isNum(char **av){
-	for (int i = 1 ; av[i] ; i++){
-		std::string str = av[i];
-		for (size_t j = 0; j < str.length(); j++){
-			if (!std::isdigit(str[j])){
-				std::cerr << RED + "Error: there is a non-numeric character in the list" + RESET << std::endl;
-				return(false);
-			}
-		}
+std::vector< std::pair<int, int> > makePairs(std::vector<int> container){
+	std::vector< std::pair<int, int> > pairs;
+
+	for (int i = 0 ; i + 1 < container.size() ; i++){
+		int a = container[i];
+		int b = container[i + 1];
+		if (a < b)
+			pairs.push_back(std::make_pair(a, b));
+		else
+			pairs.push_back(std::make_pair(b, a));
+		i += 2;
 	}
-	return (true);
+	return pairs;
 }
 
 int	main(int ac, char **av){
 	if (ac < 2){
-		std::cerr << RED + "Error: too few arguments." + RESET << std::endl;
+		std::cerr << RED + "Error" + RESET << std::endl;
 		return (-1);
 	}
 	std::vector<int>	vect;
-	if (!isPositiv(av) || !isNum(av))
+	try{
+		vect = parsing(ac, av);
+	}catch(std::exception &e){
+		std::cerr << RED << e.what() << RESET << std::endl;
 		return (-1);
-	
-	// Remplir le vecteur avec les arguments
-	for (int i = 1; i < ac; i++){
-		vect.push_back(atoi(av[i]));
 	}
-	
 	std::cout << "Before: " << vect << std::endl;
 	return (0);
 }

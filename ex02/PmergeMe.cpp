@@ -12,13 +12,22 @@
 
 #include "PmergeMe.hpp"
 
-bool	isDigit(std::string s){
-	for (size_t i = 0; i < s.size(); i++){
-		if (!isdigit(s[i]))
-			return false;
-	}
-	return true;
+PmergeMe::PmergeMe(){}
+
+PmergeMe::PmergeMe(const PmergeMe& other){
+	_vector = other._vector;
+	_deque = other._deque;
 }
+
+PmergeMe&	PmergeMe::operator=(const PmergeMe& other){
+	if (this != &other){
+		_vector = other._vector;
+		_deque = other._deque;
+	}
+	return (*this);
+}
+
+PmergeMe::~PmergeMe(){}
 
 // Implémentation de l'opérateur << pour std::vector<int>
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& container){

@@ -20,11 +20,27 @@
 #include <deque>
 #include <cctype>
 #include <ctime>
+#include <utility>
 #include "Colors.hpp"
 
 
-//Parsing
-bool	isDigit(std::string s);
+class PmergeMe{
+
+	private :
+		std::vector<int>	_vector;
+		std::deque<int>		_deque;
+
+		template<typename T>
+		T fordJohnsonSort(T container);
+	public:
+		PmergeMe();
+		PmergeMe(const PmergeMe& other);
+		PmergeMe&	operator=(const PmergeMe& other);
+		~PmergeMe();
+
+		
+};
+
 
 // Surcharge spécifique pour std::vector<int>
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& container);
