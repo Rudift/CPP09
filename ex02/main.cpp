@@ -27,7 +27,7 @@ std::vector<int>	parsing(int ac, char **av){
 std::vector< std::pair<int, int> > makePairs(std::vector<int> container){
 	std::vector< std::pair<int, int> > pairs;
 
-	for (int i = 0 ; i + 1 < container.size() ; i++){
+	for (size_t i = 0 ; i + 1 < container.size() ; i++){
 		int a = container[i];
 		int b = container[i + 1];
 		if (a < b)
