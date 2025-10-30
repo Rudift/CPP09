@@ -71,7 +71,7 @@ void PmergeMe::doPairs(){
 	if (_vector.size() <= 1)
 		return ;
 	for (size_t i = 0 ; i < _vector.size() ; i+=2){
-		if (i + 1 < _vector.size()){
+		if (i + 1 < _vector.size() && _vector[i].size() == _vector[i + 1].size() && _vector[i].size() % 2 == 0){
 			if (_vector[i][_vector[i].size() - 1] > _vector[i + 1][_vector[i + 1].size() - 1])
 				std::swap(_vector[i], _vector[i + 1]);
 			_vector[i].insert(_vector[i].end(), _vector[i + 1].begin(), _vector[i + 1].end());
