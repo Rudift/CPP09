@@ -27,7 +27,7 @@
 class PmergeMe{
 
 	private :
-		std::vector<int>	_vector;
+		std::vector<std::vector<int> >	_vector;
 		std::deque<int>		_deque;
 
 		template<typename T>
@@ -38,6 +38,13 @@ class PmergeMe{
 		PmergeMe&	operator=(const PmergeMe& other);
 		~PmergeMe();
 
+		//Member fonctions
+		void	parsing(int ac, char **av);
+		void	doPairs();
+
+		//Getters
+		std::vector<std::vector<int> > getVector();
+
 		
 };
 
@@ -47,5 +54,8 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int>& container);
 
 // Surcharge spécifique pour std::deque<int>
 std::ostream& operator<<(std::ostream& os, const std::deque<int>& container);
+
+// Surcharge spécifique pour std::vector< std::vector<int> >
+std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int> >& container);
 
 #endif
