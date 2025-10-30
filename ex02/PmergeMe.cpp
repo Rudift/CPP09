@@ -44,13 +44,18 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int>& container){
 	return (os);
 }
 
-//Member fonction
+//Non-member fonction
 std::vector<int> vectoriser(int nb){
 	std::vector<int> vect;
 	vect.push_back(nb);
 	return (vect);
 }
 
+bool	isEmptyVector(const std::vector<int>& v){
+	return (v.empty());
+}
+
+//Member fonction
 void	PmergeMe::parsing(int ac, char **av){
 	std::vector<std::vector<int> > vect;
 	for (int i = 1 ; i < ac ; i++){
@@ -63,10 +68,20 @@ void	PmergeMe::parsing(int ac, char **av){
 }
 
 void PmergeMe::doPairs(){
-	if (_vector.size() == 1)
+	if (_vector.size() <= 1)
 		return ;
-	
-	
+	for (size_t i = 0 ; i < _vector.size() ; i+=2){
+		if (i + 1 < _vector.size()){
+			if (_vector[i][_vector[i].size() - 1] > _vector[i + 1][_vector[i + 1].size() - 1])
+				std::swap(_vector[i], _vector[i + 1]);
+			_vector[i].insert(_vector[i].end(), _vector[i + 1].begin(), _vector[i + 1].end());
+			_vector[i + 1].clear();
+			//std::cout << "Max pair n*" << i/2 << " = " << _vector[i][_vector[i].size() - 1] << std::endl;
+		}
+	}
+	_vector.erase(std::remove_if(_vector.begin(), _vector.end(), isEmptyVector), _vector.end());
+	std::cout << "Pairing: " << _vector << std::endl;
+	this->doPairs();
 }
 
 //Getters
