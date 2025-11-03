@@ -57,12 +57,22 @@ bool	isEmptyVector(const std::vector<int>& v){
 
 //Member fonction
 void	PmergeMe::parsing(int ac, char **av){
+	std::vector<int> numbers;
+	
 	for (int i = 1 ; i < ac ; i++){
 		for (size_t j = 0 ; av[i][j] != '\0' ; j++){
 			if (!std::isdigit(av[i][j]))
 				throw std::invalid_argument("Error");
 		}
-		_vector.push_back(vectoriser(atoi(av[i])));
+		int number = atoi(av[i]);
+		
+		for (size_t k = 0; k < numbers.size(); k++){
+			if (numbers[k] == number)
+				throw std::invalid_argument("Error");
+		}
+		
+		numbers.push_back(number);
+		_vector.push_back(vectoriser(number));
 	}
 }
 
@@ -76,14 +86,11 @@ void PmergeMe::doPairs(){
 			_vector[i].insert(_vector[i].end(), _vector[i + 1].begin(), _vector[i + 1].end());
 			_vector[i + 1].clear();
 			hasPaired = true;
-			//std::cout << "Max pair n*" << i/2 << " = " << _vector[i][_vector[i].size() - 1] << std::endl;
 		}
 	}
 	_vector.erase(std::remove_if(_vector.begin(), _vector.end(), isEmptyVector), _vector.end());
-	std::cout << "Pairing: " << _vector << std::endl;
-	if (hasPaired && _vector.size() > 1) {
+	if (hasPaired && _vector.size() > 1)
 		this->doPairs();
-	}
 }
 
 //Getters
