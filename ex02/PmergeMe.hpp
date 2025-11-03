@@ -28,7 +28,7 @@ class PmergeMe{
 
 	private :
 		std::vector<std::vector<int> >	_vector;
-		std::deque<int>		_deque;
+		std::deque<std::deque<int> >	_deque;
 
 		template<typename T>
 		T fordJohnsonSort(T container);
@@ -44,7 +44,7 @@ class PmergeMe{
 
 		//Getters
 		std::vector<std::vector<int> > getVector();
-
+		
 		
 };
 

@@ -57,7 +57,6 @@ bool	isEmptyVector(const std::vector<int>& v){
 
 //Member fonction
 void	PmergeMe::parsing(int ac, char **av){
-	std::vector<std::vector<int> > vect;
 	for (int i = 1 ; i < ac ; i++){
 		for (size_t j = 0 ; av[i][j] != '\0' ; j++){
 			if (!std::isdigit(av[i][j]))
@@ -68,20 +67,23 @@ void	PmergeMe::parsing(int ac, char **av){
 }
 
 void PmergeMe::doPairs(){
-	if (_vector.size() <= 1)
-		return ;
+	bool hasPaired = false;
+	
 	for (size_t i = 0 ; i < _vector.size() ; i+=2){
-		if (i + 1 < _vector.size() && _vector[i].size() == _vector[i + 1].size() && _vector[i].size() % 2 == 0){
+		if (i + 1 < _vector.size() && _vector[i].size() == _vector[i + 1].size()){
 			if (_vector[i][_vector[i].size() - 1] > _vector[i + 1][_vector[i + 1].size() - 1])
 				std::swap(_vector[i], _vector[i + 1]);
 			_vector[i].insert(_vector[i].end(), _vector[i + 1].begin(), _vector[i + 1].end());
 			_vector[i + 1].clear();
+			hasPaired = true;
 			//std::cout << "Max pair n*" << i/2 << " = " << _vector[i][_vector[i].size() - 1] << std::endl;
 		}
 	}
 	_vector.erase(std::remove_if(_vector.begin(), _vector.end(), isEmptyVector), _vector.end());
 	std::cout << "Pairing: " << _vector << std::endl;
-	this->doPairs();
+	if (hasPaired && _vector.size() > 1) {
+		this->doPairs();
+	}
 }
 
 //Getters
