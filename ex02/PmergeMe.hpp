@@ -30,8 +30,6 @@ class PmergeMe{
 		std::vector<std::vector<int> >	_vector;
 		std::deque<std::deque<int> >	_deque;
 
-		template<typename T>
-		T fordJohnsonSort(T container);
 	public:
 		PmergeMe();
 		PmergeMe(const PmergeMe& other);
