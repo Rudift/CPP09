@@ -12,6 +12,28 @@
 
 #include "PmergeMe.hpp"
 
+size_t	binarySearch(std::vector<std::vector<int> > vect, int elem, size_t nbElem){
+	if (nbElem == 0)
+		return 0;
+
+	size_t sizeElem = vect[0].size();
+	int left = 0;
+	int right = nbElem - 1;
+	int mid = 0;
+
+	while (left <= right) {
+		mid = left + (right - left) / 2;
+
+		// Compare l'élément recherché avec le dernier élément de la ligne 'mid'
+		if (vect[mid][sizeElem - 1] < elem)
+			left = mid + 1;
+		else
+			right = mid - 1;
+	}
+	return left;
+}
+
+
 PmergeMe::PmergeMe(){}
 
 PmergeMe::PmergeMe(const PmergeMe& other){
@@ -78,7 +100,17 @@ void	PmergeMe::parsing(int ac, char **av){
 
 void PmergeMe::doPairs(){
 	bool hasPaired = false;
-	
+	std::vector<int> oddVector;
+	size_t lastElem = _vector.size() - 1;
+	bool hasOdd = false;
+	if (lastElem % 2 == 0 && lastElem != 0)
+	{
+		oddVector =(_vector[lastElem]);
+		hasOdd = true;
+		_vector.pop_back();
+		std::cout <<"Reste: "<< oddVector<<std::endl;
+		std::cout <<"Vector: "<< _vector <<std::endl;
+	}
 	for (size_t i = 0 ; i < _vector.size() ; i+=2){
 		if (i + 1 < _vector.size() && _vector[i].size() == _vector[i + 1].size()){
 			if (_vector[i][_vector[i].size() - 1] > _vector[i + 1][_vector[i + 1].size() - 1])
@@ -87,10 +119,83 @@ void PmergeMe::doPairs(){
 			_vector[i + 1].clear();
 			hasPaired = true;
 		}
+
 	}
+
 	_vector.erase(std::remove_if(_vector.begin(), _vector.end(), isEmptyVector), _vector.end());
+
+
+
+	std::cout << "Pairing: " << _vector << std::endl << std::endl;
 	if (hasPaired && _vector.size() > 1)
 		this->doPairs();
+	
+
+	//defusionner les pair  en main et pend
+	std::vector<std::vector<int> > winner;
+	std::vector<std::vector<int> > looser;
+	size_t sizeElem	= _vector[0].size();
+	if (sizeElem == 1)
+		return ;
+	else
+		sizeElem /= 2;	
+	
+	for (size_t i = 0; i < _vector.size(); i++){
+		if (_vector[i].size() == sizeElem * 2){
+			std::vector<int> tmpWin;
+			std::vector<int> tmpLoose;
+
+			for(size_t j = 0 ; j < sizeElem ; j++){
+				tmpLoose.push_back(_vector[i][j]);
+				tmpWin.push_back(_vector[i][j + sizeElem]);
+			}
+			winner.push_back(tmpWin);
+			looser.push_back(tmpLoose);
+		}
+	}
+	std::cout << "Winner: " << winner << std::endl ;
+	std::cout << "Looser: " << looser << std::endl ;
+
+	//2 inserer pend dans main
+	for (size_t i = 0; i < looser.size(); i++){
+		size_t index = i; // inserer sequence de Jacobsthal ici
+		int needle = _vector[index][2 * sizeElem - 1];
+		int indexWin;
+		for (size_t j = 0; j < winner.size(); j++) {
+			if (needle == winner[j][sizeElem - 1])
+			{
+				indexWin = j;
+			}
+		}
+
+		size_t indexInsert = binarySearch(winner, looser[index][sizeElem - 1], indexWin +1);
+		winner.push_back(looser[index]);
+		std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
+		std::cout << "--- "<<winner<< "indexWin = "<< indexWin<<std::endl;
+	
+	}
+	if (hasOdd)
+	{
+		std::cout << "reste : " << oddVector<< std::endl;
+		 size_t indexInsert = binarySearch(winner, oddVector[sizeElem - 1], winner.size());
+		 winner.push_back(oddVector);
+		 std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
+		 std::cout << winner<< std::endl;
+		//winner.push_back(oddVector);
+	}
+
+
+	_vector.clear();
+	for (size_t i = 0; i < winner.size(); i++){
+		std::vector<int> tmp;
+		for (size_t j = 0 ; j < winner[i].size(); j++)
+		{
+			tmp.push_back(winner[i][j]);
+		}
+			_vector.push_back(tmp);
+	}
+
+	std::cout << "Vector: " << _vector << std::endl;
 }
 
 //Getters
@@ -107,8 +212,10 @@ std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int> >&
 	
 	while (it != end)
 	{
+		os <<"(";
 		os << *it;
 		++it;
+		os << ") ";
 		if (it != end)
 			os << " ";
 	}
