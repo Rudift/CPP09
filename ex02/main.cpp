@@ -22,7 +22,7 @@ int	main(int ac, char **av){
 	try{
 		merge.parsing(ac, av);
 		std::cout << "Before: " << merge.getVector() << std::endl;
-		merge.doPairs();
+		merge.sortVector();
 		std::cout << "After: " << merge.getVector() << std::endl;
 		std::cout << "Size of the main: " << merge.getVector().size() << std::endl;
 	}catch(std::exception &e){

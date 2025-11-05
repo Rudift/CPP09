@@ -38,7 +38,7 @@ class PmergeMe{
 
 		//Member fonctions
 		void	parsing(int ac, char **av);
-		void	doPairs();
+		void	sortVector();
 
 		//Getters
 		std::vector<std::vector<int> > getVector();

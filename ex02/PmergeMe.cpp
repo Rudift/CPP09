@@ -33,6 +33,26 @@ size_t	binarySearch(std::vector<std::vector<int> > vect, int elem, size_t nbElem
 	return left;
 }
 
+size_t	jacobsthalGenerator(size_t sizeElem, size_t index){
+	size_t	jacobSequence[sizeElem];
+
+	jacobSequence[0] = 0;
+	jacobSequence[1] = 1;
+	for (size_t i = 2 ; i < sizeElem ; i++){
+		jacobSequence[i] = jacobSequence[i - 1] + 2 * jacobSequence[i - 2];
+	}
+	
+	// Afficher le contenu du tableau manuellement
+	std::cout << "Jacobsthal sequence: ";
+	for (size_t i = 0; i < sizeElem; i++) {
+		std::cout << jacobSequence[i];
+		if (i < sizeElem - 1) std::cout << " ";
+	}
+	std::cout << std::endl;
+	
+	return (jacobSequence[index]);
+}
+
 
 PmergeMe::PmergeMe(){}
 
@@ -98,7 +118,7 @@ void	PmergeMe::parsing(int ac, char **av){
 	}
 }
 
-void PmergeMe::doPairs(){
+void PmergeMe::sortVector(){
 	bool hasPaired = false;
 	std::vector<int> oddVector;
 	size_t lastElem = _vector.size() - 1;
@@ -128,7 +148,7 @@ void PmergeMe::doPairs(){
 
 	std::cout << "Pairing: " << _vector << std::endl << std::endl;
 	if (hasPaired && _vector.size() > 1)
-		this->doPairs();
+		this->sortVector();
 	
 
 	//defusionner les pair  en main et pend
@@ -158,6 +178,7 @@ void PmergeMe::doPairs(){
 
 	//2 inserer pend dans main
 	for (size_t i = 0; i < looser.size(); i++){
+		jacobsthalGenerator(sizeElem, i);
 		size_t index = i; // inserer sequence de Jacobsthal ici
 		int needle = _vector[index][2 * sizeElem - 1];
 		int indexWin;
