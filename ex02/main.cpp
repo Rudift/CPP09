@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
-#include <cstdlib>
+
 
 int	main(int ac, char **av){
 	if (ac < 2){
@@ -22,9 +22,12 @@ int	main(int ac, char **av){
 	try{
 		merge.parsing(ac, av);
 		std::cout << "Before: " << merge.getVector() << std::endl;
+		clock_t beginVect = clock();
 		merge.sortVector();
+		clock_t endVect = clock();
+		double	timeVect = (double(endVect - beginVect) / CLOCKS_PER_SEC) * 1000000;
 		std::cout << "After: " << merge.getVector() << std::endl;
-		std::cout << "Size of the main: " << merge.getVector().size() << std::endl;
+		std::cout << "Time to process a range of " << merge.getVector().size() << " elements with std::vector: " << timeVect << "us" << std::endl;
 	}catch(std::exception &e){
 		std::cerr << RED << e.what() << RESET << std::endl;
 		return (-1);

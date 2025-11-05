@@ -21,6 +21,7 @@
 #include <cctype>
 #include <ctime>
 #include <utility>
+#include <cstdlib>
 #include "Colors.hpp"
 
 
@@ -32,28 +33,40 @@ class PmergeMe{
 
 	public:
 		PmergeMe();
-		PmergeMe(const PmergeMe& other);
+		PmergeMe(const PmergeMe& other); 
 		PmergeMe&	operator=(const PmergeMe& other);
 		~PmergeMe();
 
 		//Member fonctions
 		void	parsing(int ac, char **av);
 		void	sortVector();
+		
+		//Fonctions for sorting vectors
+		std::vector<int> handleOddElement();
+		void	doPairing();
+		void	separateWinnersAndLosers(std::vector<std::vector<int> >& winner, 
+											std::vector<std::vector<int> >& looser, 
+											size_t sizeElem);
+		std::vector<size_t> generateJacobsthalOrder(size_t nbElements);
+		void	insertLosersIntoWinners(std::vector<std::vector<int> >& winner,
+										const std::vector<std::vector<int> >& looser,
+										size_t sizeElem);
+		void	insertOddElementBack(std::vector<std::vector<int> >& winner,
+									const std::vector<int>& oddElement,
+									size_t sizeElem);
+		void	rebuildVector(const std::vector<std::vector<int> >& winner);
 
 		//Getters
 		std::vector<std::vector<int> > getVector();
-		
-		
+		std::deque<std::deque<int> > getDeque();
 };
 
 
-// Surcharge spécifique pour std::vector<int>
+//Operators overload
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& container);
 
-// Surcharge spécifique pour std::deque<int>
 std::ostream& operator<<(std::ostream& os, const std::deque<int>& container);
 
-// Surcharge spécifique pour std::vector< std::vector<int> >
 std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int> >& container);
 
 #endif

@@ -12,6 +12,34 @@
 
 #include "PmergeMe.hpp"
 
+//Canonical
+
+PmergeMe::PmergeMe(){}
+
+PmergeMe::PmergeMe(const PmergeMe& other){
+	_vector = other._vector;
+	_deque = other._deque;
+}
+
+PmergeMe&	PmergeMe::operator=(const PmergeMe& other){
+	if (this != &other){
+		_vector = other._vector;
+		_deque = other._deque;
+	}
+	return (*this);
+}
+
+//Non-member fonction
+std::vector<int> vectoriser(int nb){
+	std::vector<int> vect;
+	vect.push_back(nb);
+	return (vect);
+}
+
+bool	isEmptyVector(const std::vector<int>& v){
+	return (v.empty());
+}
+
 size_t	binarySearch(std::vector<std::vector<int> > vect, int elem, size_t nbElem){
 	if (nbElem == 0)
 		return 0;
@@ -30,72 +58,34 @@ size_t	binarySearch(std::vector<std::vector<int> > vect, int elem, size_t nbElem
 		else
 			right = mid - 1;
 	}
-	return left;
+	return (left);
 }
 
 size_t	jacobsthalGenerator(size_t sizeElem, size_t index){
-	size_t	jacobSequence[sizeElem];
+	std::vector<size_t> jacobSequence(sizeElem);
 
+	if (sizeElem == 0)
+		return 0;
 	jacobSequence[0] = 0;
+	if (sizeElem == 1)
+		return (jacobSequence[0]);
+	
 	jacobSequence[1] = 1;
 	for (size_t i = 2 ; i < sizeElem ; i++){
 		jacobSequence[i] = jacobSequence[i - 1] + 2 * jacobSequence[i - 2];
 	}
 	
-	// Afficher le contenu du tableau manuellement
-	std::cout << "Jacobsthal sequence: ";
-	for (size_t i = 0; i < sizeElem; i++) {
-		std::cout << jacobSequence[i];
+	// Afficher le contenu du vecteur
+	for (size_t i = 0; i < sizeElem; i++)
 		if (i < sizeElem - 1) std::cout << " ";
-	}
 	std::cout << std::endl;
 	
+	if (index >= sizeElem)
+		return 0;
 	return (jacobSequence[index]);
 }
 
-
-PmergeMe::PmergeMe(){}
-
-PmergeMe::PmergeMe(const PmergeMe& other){
-	_vector = other._vector;
-	_deque = other._deque;
-}
-
-PmergeMe&	PmergeMe::operator=(const PmergeMe& other){
-	if (this != &other){
-		_vector = other._vector;
-		_deque = other._deque;
-	}
-	return (*this);
-}
-
 PmergeMe::~PmergeMe(){}
-
-// Implémentation de l'opérateur << pour std::vector<int>
-std::ostream& operator<<(std::ostream& os, const std::vector<int>& container){
-	std::vector<int>::const_iterator it = container.begin();
-	std::vector<int>::const_iterator end = container.end();
-	
-	while (it != end)
-	{
-		os << *it;
-		++it;
-		if (it != end)
-			os << " ";
-	}
-	return (os);
-}
-
-//Non-member fonction
-std::vector<int> vectoriser(int nb){
-	std::vector<int> vect;
-	vect.push_back(nb);
-	return (vect);
-}
-
-bool	isEmptyVector(const std::vector<int>& v){
-	return (v.empty());
-}
 
 //Member fonction
 void	PmergeMe::parsing(int ac, char **av){
@@ -119,19 +109,55 @@ void	PmergeMe::parsing(int ac, char **av){
 }
 
 void PmergeMe::sortVector(){
-	bool hasPaired = false;
-	std::vector<int> oddVector;
-	size_t lastElem = _vector.size() - 1;
-	bool hasOdd = false;
-	if (lastElem % 2 == 0 && lastElem != 0)
-	{
-		oddVector =(_vector[lastElem]);
-		hasOdd = true;
-		_vector.pop_back();
-		std::cout <<"Reste: "<< oddVector<<std::endl;
-		std::cout <<"Vector: "<< _vector <<std::endl;
+	//Step 1: Handle the odd Element if there is one
+	std::vector<int> oddElement = handleOddElement();
+	bool hasOdd = !oddElement.empty();
+	
+	//Step 2: Do the recursive pairing;
+	doPairing();
+	
+	//Step 3: separate the winner and the looser
+	std::vector<std::vector<int> > winner;
+	std::vector<std::vector<int> > looser;
+	size_t sizeElem = _vector[0].size();
+	
+	if (sizeElem == 1) {
+		return; // Sorting is finish
 	}
-	for (size_t i = 0 ; i < _vector.size() ; i+=2){
+	
+	sizeElem /= 2;
+	separateWinnersAndLosers(winner, looser, sizeElem);
+	
+	// Step 4: Use Jacobsthal to insert loosers into winners
+	insertLosersIntoWinners(winner, looser, sizeElem);
+	
+	// Step 5: Insert the odd element if he exist
+	if (hasOdd) {
+		insertOddElementBack(winner, oddElement, sizeElem);
+	}
+	
+	// Step 6: Reconstruct the final vector
+	rebuildVector(winner);
+}
+
+std::vector<int> PmergeMe::handleOddElement() {
+	std::vector<int> oddElement;
+	size_t lastElem = _vector.size() - 1;
+	
+	if (lastElem % 2 == 0 && lastElem != 0) {
+		oddElement = _vector[lastElem];
+		_vector.pop_back();
+		// std::cout << "Reste: " << oddElement << std::endl;
+		// std::cout << "Vector: " << _vector << std::endl;
+	}
+	
+	return oddElement;
+}
+
+void PmergeMe::doPairing(){
+	bool hasPaired = false;
+	
+	for (size_t i = 0; i < _vector.size(); i += 2){
 		if (i + 1 < _vector.size() && _vector[i].size() == _vector[i + 1].size()){
 			if (_vector[i][_vector[i].size() - 1] > _vector[i + 1][_vector[i + 1].size() - 1])
 				std::swap(_vector[i], _vector[i + 1]);
@@ -139,33 +165,23 @@ void PmergeMe::sortVector(){
 			_vector[i + 1].clear();
 			hasPaired = true;
 		}
-
 	}
-
-	_vector.erase(std::remove_if(_vector.begin(), _vector.end(), isEmptyVector), _vector.end());
-
-
-
-	std::cout << "Pairing: " << _vector << std::endl << std::endl;
+	
+	_vector.erase(std::remove_if(_vector.begin(), _vector.end(), isEmptyVector), _vector.end()); // Delete the empty vectors
+	
+	//std::cout << "Pairing: " << _vector << std::endl << std::endl;
+	
 	if (hasPaired && _vector.size() > 1)
 		this->sortVector();
-	
+}
 
-	//defusionner les pair  en main et pend
-	std::vector<std::vector<int> > winner;
-	std::vector<std::vector<int> > looser;
-	size_t sizeElem	= _vector[0].size();
-	if (sizeElem == 1)
-		return ;
-	else
-		sizeElem /= 2;	
-	
+void PmergeMe::separateWinnersAndLosers(std::vector<std::vector<int> >& winner, std::vector<std::vector<int> >& looser, size_t sizeElem){
 	for (size_t i = 0; i < _vector.size(); i++){
-		if (_vector[i].size() == sizeElem * 2){
+		if (_vector[i].size() == sizeElem * 2) {
 			std::vector<int> tmpWin;
 			std::vector<int> tmpLoose;
 
-			for(size_t j = 0 ; j < sizeElem ; j++){
+			for (size_t j = 0; j < sizeElem; j++) {
 				tmpLoose.push_back(_vector[i][j]);
 				tmpWin.push_back(_vector[i][j + sizeElem]);
 			}
@@ -173,60 +189,118 @@ void PmergeMe::sortVector(){
 			looser.push_back(tmpLoose);
 		}
 	}
-	std::cout << "Winner: " << winner << std::endl ;
-	std::cout << "Looser: " << looser << std::endl ;
+	//std::cout << "Winner: " << winner << std::endl;
+	//std::cout << "Looser: " << looser << std::endl;
+}
 
-	//2 inserer pend dans main
-	for (size_t i = 0; i < looser.size(); i++){
-		jacobsthalGenerator(sizeElem, i);
-		size_t index = i; // inserer sequence de Jacobsthal ici
+std::vector<size_t> PmergeMe::generateJacobsthalOrder(size_t nbElements) {
+	std::vector<size_t> insertionOrder;
+	
+	// Generate the Jacobshtal sequence
+	std::vector<size_t> jacobsthal;
+	jacobsthal.push_back(0);
+	jacobsthal.push_back(1);
+	
+	size_t maxNeeded = nbElements + 2;
+	for (size_t i = 2; i < maxNeeded; i++){
+		size_t next = jacobsthal[i - 1] + 2 * jacobsthal[i - 2];
+		jacobsthal.push_back(next);
+	}
+	
+	// Create the insertion order with Jacobsthal
+	std::vector<bool> inserted(nbElements, false);
+	
+	for (size_t jacobIndex = 2; jacobIndex < jacobsthal.size(); jacobIndex++){
+		size_t currentJacob = jacobsthal[jacobIndex];
+		size_t prevJacob = jacobsthal[jacobIndex - 1];
+		
+		for (size_t pos = std::min(currentJacob, nbElements); pos > prevJacob && pos > 0; pos--){
+			size_t index = pos - 1;
+			if (index < nbElements && !inserted[index]) {
+				insertionOrder.push_back(index);
+				inserted[index] = true;
+			}
+		}
+	}
+	
+	for (size_t i = 0; i < nbElements; i++){
+		if (!inserted[i]) {
+			insertionOrder.push_back(i);
+		}
+	}
+	
+	// std::cout << "Ordre d'insertion Jacobsthal: ";
+	// for (size_t i = 0; i < insertionOrder.size(); i++) {
+	// 	std::cout << insertionOrder[i];
+	// 	if (i < insertionOrder.size() - 1) std::cout << " ";
+	// }
+	std::cout << std::endl;
+	
+	return insertionOrder;
+}
+
+void PmergeMe::insertLosersIntoWinners(std::vector<std::vector<int> >& winner,
+										const std::vector<std::vector<int> >& looser,
+										size_t sizeElem) {
+	std::vector<size_t> insertionOrder = generateJacobsthalOrder(looser.size());
+	
+	// Insérer dans l'ordre Jacobsthal
+	for (size_t i = 0; i < insertionOrder.size(); i++) {
+		size_t index = insertionOrder[i];
 		int needle = _vector[index][2 * sizeElem - 1];
 		int indexWin;
+		
 		for (size_t j = 0; j < winner.size(); j++) {
-			if (needle == winner[j][sizeElem - 1])
-			{
+			if (needle == winner[j][sizeElem - 1]) {
 				indexWin = j;
 			}
 		}
 
-		size_t indexInsert = binarySearch(winner, looser[index][sizeElem - 1], indexWin +1);
+		size_t indexInsert = binarySearch(winner, looser[index][sizeElem - 1], indexWin + 1);
 		winner.push_back(looser[index]);
 		std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
-		std::cout << "--- "<<winner<< "indexWin = "<< indexWin<<std::endl;
-	
+		//std::cout << "--- Inséré élément " << index << ": " << winner << " indexWin = " << indexWin << std::endl;
 	}
-	if (hasOdd)
-	{
-		std::cout << "reste : " << oddVector<< std::endl;
-		 size_t indexInsert = binarySearch(winner, oddVector[sizeElem - 1], winner.size());
-		 winner.push_back(oddVector);
-		 std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
-		 std::cout << winner<< std::endl;
-		//winner.push_back(oddVector);
-	}
+}
 
+void PmergeMe::insertOddElementBack(std::vector<std::vector<int> >& winner,
+									const std::vector<int>& oddElement,
+									size_t sizeElem) {
+	//std::cout << "reste : " << oddElement << std::endl;
+	size_t indexInsert = binarySearch(winner, oddElement[sizeElem - 1], winner.size());
+	winner.push_back(oddElement);
+	std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
+	//std::cout << winner << std::endl;
+}
 
+void PmergeMe::rebuildVector(const std::vector<std::vector<int> >& winner) {
 	_vector.clear();
-	for (size_t i = 0; i < winner.size(); i++){
+	for (size_t i = 0; i < winner.size(); i++) {
 		std::vector<int> tmp;
-		for (size_t j = 0 ; j < winner[i].size(); j++)
-		{
+		for (size_t j = 0; j < winner[i].size(); j++) {
 			tmp.push_back(winner[i][j]);
 		}
-			_vector.push_back(tmp);
+		_vector.push_back(tmp);
 	}
-
-	std::cout << "Vector: " << _vector << std::endl;
+	
+	// std::cout << "Vector: " << _vector << std::endl;
 }
 
-//Getters
-std::vector<std::vector<int> > PmergeMe::getVector(){
-	return(_vector);
+//Operators overload
+std::ostream& operator<<(std::ostream& os, const std::vector<int>& container){
+	std::vector<int>::const_iterator it = container.begin();
+	std::vector<int>::const_iterator end = container.end();
+	
+	while (it != end)
+	{
+		os << *it;
+		++it;
+		if (it != end)
+			os << " ";
+	}
+	return (os);
 }
 
-
-
-// Implémentation de l'opérateur << pour std::vector<std::vector<int> >
 std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int> >& container){
 	std::vector<std::vector<int> >::const_iterator it = container.begin();
 	std::vector<std::vector<int> >::const_iterator end = container.end();
@@ -243,7 +317,6 @@ std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int> >&
 	return (os);
 }
 
-// Implémentation de l'opérateur << pour std::deque<int>
 std::ostream& operator<<(std::ostream& os, const std::deque<int>& container){
 	std::deque<int>::const_iterator it = container.begin();
 	std::deque<int>::const_iterator end = container.end();
@@ -256,4 +329,29 @@ std::ostream& operator<<(std::ostream& os, const std::deque<int>& container){
 			os << " ";
 	}
 	return (os);
+}
+
+std::ostream& operator<<(std::ostream& os, const std::deque<std::deque<int> >& container){
+	std::deque<std::deque<int> >::const_iterator it = container.begin();
+	std::deque<std::deque<int> >::const_iterator end = container.end();
+	
+	while (it != end)
+	{
+		os <<"(";
+		os << *it;
+		++it;
+		os << ") ";
+		if (it != end)
+			os << " ";
+	}
+	return (os);
+}
+
+//Getters
+std::vector<std::vector<int> > PmergeMe::getVector(){
+	return(_vector);
+}
+
+std::deque<std::deque<int> > PmergeMe::getDeque(){
+	return(_deque);
 }
