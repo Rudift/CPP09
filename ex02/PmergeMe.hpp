@@ -40,15 +40,16 @@ class PmergeMe{
 		//Member fonctions
 		void	parsing(int ac, char **av);
 		void	sortVector();
+		void	sortDeque();
 		
-		//Fonctions for sorting vectors
-		std::vector<int> handleOddElement();
-		void	doPairing();
-		void	separateWinnersAndLosers(std::vector<std::vector<int> >& winner, 
+		//Fonctions for sorting vector
+		std::vector<int> handleOddVector();
+		void	doPairingVect();
+		void	separateWinnersAndLosersVect(std::vector<std::vector<int> >& winner, 
 											std::vector<std::vector<int> >& looser, 
 											size_t sizeElem);
-		std::vector<size_t> generateJacobsthalOrder(size_t nbElements);
-		void	insertLosersIntoWinners(std::vector<std::vector<int> >& winner,
+		std::vector<size_t> generateJacobsthalOrderVect(size_t nbElements);
+		void	insertLosersIntoWinnersVect(std::vector<std::vector<int> >& winner,
 										const std::vector<std::vector<int> >& looser,
 										size_t sizeElem);
 		void	insertOddElementBack(std::vector<std::vector<int> >& winner,
@@ -56,11 +57,19 @@ class PmergeMe{
 									size_t sizeElem);
 		void	rebuildVector(const std::vector<std::vector<int> >& winner);
 
+		//Fonction for sorting deque
+		std::deque<int> 	handleOddDeque();
+		void				doPairingDeque();
+		void				separateWinnersAndLosersDeq(std::deque<std::deque<int> >& winner, std::deque<std::deque<int> >& looser, size_t sizeElem);
+		void				insertLosersIntoWinnersDeq(std::deque<std::deque<int> >& winner, const std::deque<std::deque<int> >& looser, size_t sizeElem);
+		std::deque<size_t>	generateJacobsthalOrderDeq(size_t nbElements);
+
 		//Getters
 		std::vector<std::vector<int> > getVector();
 		std::deque<std::deque<int> > getDeque();
 };
 
+std::deque<int> dequeiser(int nb);
 
 //Operators overload
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& container);
@@ -68,5 +77,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int>& container);
 std::ostream& operator<<(std::ostream& os, const std::deque<int>& container);
 
 std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int> >& container);
+
+std::ostream& operator<<(std::ostream& os, const std::deque<std::deque<int> >& container);
 
 #endif

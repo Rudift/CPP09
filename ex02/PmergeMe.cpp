@@ -29,6 +29,8 @@ PmergeMe&	PmergeMe::operator=(const PmergeMe& other){
 	return (*this);
 }
 
+//===========VECTOR===========
+
 //Non-member fonction
 std::vector<int> vectoriser(int nb){
 	std::vector<int> vect;
@@ -105,16 +107,17 @@ void	PmergeMe::parsing(int ac, char **av){
 		
 		numbers.push_back(number);
 		_vector.push_back(vectoriser(number));
+		_deque.push_back(dequeiser(number));
 	}
 }
 
 void PmergeMe::sortVector(){
 	//Step 1: Handle the odd Element if there is one
-	std::vector<int> oddElement = handleOddElement();
+	std::vector<int> oddElement = handleOddVector();
 	bool hasOdd = !oddElement.empty();
 	
 	//Step 2: Do the recursive pairing;
-	doPairing();
+	doPairingVect();
 	
 	//Step 3: separate the winner and the looser
 	std::vector<std::vector<int> > winner;
@@ -126,10 +129,10 @@ void PmergeMe::sortVector(){
 	}
 	
 	sizeElem /= 2;
-	separateWinnersAndLosers(winner, looser, sizeElem);
+	separateWinnersAndLosersVect(winner, looser, sizeElem);
 	
 	// Step 4: Use Jacobsthal to insert loosers into winners
-	insertLosersIntoWinners(winner, looser, sizeElem);
+	insertLosersIntoWinnersVect(winner, looser, sizeElem);
 	
 	// Step 5: Insert the odd element if he exist
 	if (hasOdd) {
@@ -140,7 +143,7 @@ void PmergeMe::sortVector(){
 	rebuildVector(winner);
 }
 
-std::vector<int> PmergeMe::handleOddElement() {
+std::vector<int> PmergeMe::handleOddVector() {
 	std::vector<int> oddElement;
 	size_t lastElem = _vector.size() - 1;
 	
@@ -154,7 +157,7 @@ std::vector<int> PmergeMe::handleOddElement() {
 	return oddElement;
 }
 
-void PmergeMe::doPairing(){
+void PmergeMe::doPairingVect(){
 	bool hasPaired = false;
 	
 	for (size_t i = 0; i < _vector.size(); i += 2){
@@ -175,7 +178,7 @@ void PmergeMe::doPairing(){
 		this->sortVector();
 }
 
-void PmergeMe::separateWinnersAndLosers(std::vector<std::vector<int> >& winner, std::vector<std::vector<int> >& looser, size_t sizeElem){
+void PmergeMe::separateWinnersAndLosersVect(std::vector<std::vector<int> >& winner, std::vector<std::vector<int> >& looser, size_t sizeElem){
 	for (size_t i = 0; i < _vector.size(); i++){
 		if (_vector[i].size() == sizeElem * 2) {
 			std::vector<int> tmpWin;
@@ -193,7 +196,7 @@ void PmergeMe::separateWinnersAndLosers(std::vector<std::vector<int> >& winner, 
 	//std::cout << "Looser: " << looser << std::endl;
 }
 
-std::vector<size_t> PmergeMe::generateJacobsthalOrder(size_t nbElements) {
+std::vector<size_t> PmergeMe::generateJacobsthalOrderVect(size_t nbElements) {
 	std::vector<size_t> insertionOrder;
 	
 	// Generate the Jacobshtal sequence
@@ -239,10 +242,10 @@ std::vector<size_t> PmergeMe::generateJacobsthalOrder(size_t nbElements) {
 	return insertionOrder;
 }
 
-void PmergeMe::insertLosersIntoWinners(std::vector<std::vector<int> >& winner,
+void PmergeMe::insertLosersIntoWinnersVect(std::vector<std::vector<int> >& winner,
 										const std::vector<std::vector<int> >& looser,
 										size_t sizeElem) {
-	std::vector<size_t> insertionOrder = generateJacobsthalOrder(looser.size());
+	std::vector<size_t> insertionOrder = generateJacobsthalOrderVect(looser.size());
 	
 	// Insérer dans l'ordre Jacobsthal
 	for (size_t i = 0; i < insertionOrder.size(); i++) {
@@ -284,6 +287,166 @@ void PmergeMe::rebuildVector(const std::vector<std::vector<int> >& winner) {
 	}
 	
 	// std::cout << "Vector: " << _vector << std::endl;
+}
+
+//===========DEQUE===========
+std::deque<int> dequeiser(int nb){
+	std::deque<int> deq;
+	deq.push_back(nb);
+	return (deq);
+}
+
+std::deque<int> PmergeMe::handleOddDeque(){
+	std::deque<int> oddElement;
+	size_t lastElem = _deque.size() - 1;
+	
+	if (lastElem % 2 == 0 && lastElem != 0){
+		oddElement = _deque[lastElem];
+		_vector.pop_back();
+		// std::cout << "Reste: " << oddElement << std::endl;
+		// std::cout << "Vector: " << _vector << std::endl;
+	}
+	
+	return (oddElement);
+}
+
+void PmergeMe::doPairingDeque(){
+	bool hasPaired = false;
+	
+	for (size_t i = 0; i < _deque.size(); i += 2){
+		if (i + 1 < _deque.size() && _deque[i].size() == _deque[i + 1].size()){
+			if (_deque[i][_deque[i].size() - 1] > _deque[i + 1][_deque[i + 1].size() - 1])
+				std::swap(_deque[i], _deque[i + 1]);
+			_deque[i].insert(_deque[i].end(), _deque[i + 1].begin(), _deque[i + 1].end());
+			_deque[i + 1].clear();
+			hasPaired = true;
+		}
+	}
+	
+	_deque.erase(std::remove_if(_deque.begin(), _deque.end(), isEmptyVector), _deque.end()); // Delete the empty vectors
+	
+	//std::cout << "Pairing: " << _vector << std::endl << std::endl;
+	
+	if (hasPaired && _deque.size() > 1)
+		this->sortVector();
+}
+
+void PmergeMe::separateWinnersAndLosersDeq(std::deque<std::deque<int> >& winner, std::deque<std::deque<int> >& looser, size_t sizeElem){
+	for (size_t i = 0; i < _deque.size(); i++){
+		if (_deque[i].size() == sizeElem * 2) {
+			std::deque<int> tmpWin;
+			std::deque<int> tmpLoose;
+
+			for (size_t j = 0; j < sizeElem; j++) {
+				tmpLoose.push_back(_deque[i][j]);
+				tmpWin.push_back(_deque[i][j + sizeElem]);
+			}
+			winner.push_back(tmpWin);
+			looser.push_back(tmpLoose);
+		}
+	}
+	//std::cout << "Winner: " << winner << std::endl;
+	//std::cout << "Looser: " << looser << std::endl;
+}
+
+std::deque<size_t> PmergeMe::generateJacobsthalOrderDeq(size_t nbElements){
+	std::deque<size_t> insertionOrder;
+	
+	// Generate the Jacobshtal sequence
+	std::deque<size_t> jacobsthal;
+	jacobsthal.push_back(0);
+	jacobsthal.push_back(1);
+	
+	size_t maxNeeded = nbElements + 2;
+	for (size_t i = 2; i < maxNeeded; i++){
+		size_t next = jacobsthal[i - 1] + 2 * jacobsthal[i - 2];
+		jacobsthal.push_back(next);
+	}
+	
+	// Create the insertion order with Jacobsthal
+	std::deque<bool> inserted(nbElements, false);
+	
+	for (size_t jacobIndex = 2; jacobIndex < jacobsthal.size(); jacobIndex++){
+		size_t currentJacob = jacobsthal[jacobIndex];
+		size_t prevJacob = jacobsthal[jacobIndex - 1];
+		
+		for (size_t pos = std::min(currentJacob, nbElements); pos > prevJacob && pos > 0; pos--){
+			size_t index = pos - 1;
+			if (index < nbElements && !inserted[index]) {
+				insertionOrder.push_back(index);
+				inserted[index] = true;
+			}
+		}
+	}
+	
+	for (size_t i = 0; i < nbElements; i++){
+		if (!inserted[i]) {
+			insertionOrder.push_back(i);
+		}
+	}
+	
+	// std::cout << "Ordre d'insertion Jacobsthal: ";
+	// for (size_t i = 0; i < insertionOrder.size(); i++) {
+	// 	std::cout << insertionOrder[i];
+	// 	if (i < insertionOrder.size() - 1) std::cout << " ";
+	// }
+	std::cout << std::endl;
+	
+	return (insertionOrder);
+}
+
+void PmergeMe::insertLosersIntoWinnersDeq(std::deque<std::deque<int> >& winner, const std::deque<std::deque<int> >& looser, size_t sizeElem){
+	std::deque<size_t> insertionOrder = generateJacobsthalOrderDeq(looser.size());
+	
+	// Insérer dans l'ordre Jacobsthal
+	for (size_t i = 0; i < insertionOrder.size(); i++) {
+		size_t index = insertionOrder[i];
+		int needle = _deque[index][2 * sizeElem - 1];
+		int indexWin;
+		
+		for (size_t j = 0; j < winner.size(); j++) {
+			if (needle == winner[j][sizeElem - 1]) {
+				indexWin = j;
+			}
+		}
+
+		size_t indexInsert = binarySearch(winner, looser[index][sizeElem - 1], indexWin + 1);
+		winner.push_back(looser[index]);
+		std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
+		//std::cout << "--- Inséré élément " << index << ": " << winner << " indexWin = " << indexWin << std::endl;
+	}
+}
+
+void PmergeMe::sortDeque(){
+	//Step 1: Handle the odd Element if there is one
+	std::deque<int> oddElement = handleOddDeque();
+	bool hasOdd = !oddElement.empty();
+	
+	//Step 2: Do the recursive pairing;
+	doPairingDeque();
+	
+	//Step 3: separate the winner and the looser
+	std::deque<std::deque<int> > winner;
+	std::deque<std::deque<int> > looser;
+	size_t sizeElem = _deque[0].size();
+	
+	if (sizeElem == 1) {
+		return; // Sorting is finish
+	}
+	
+	sizeElem /= 2;
+	separateWinnersAndLosersDeq(winner, looser, sizeElem);
+	
+	// Step 4: Use Jacobsthal to insert loosers into winners
+	insertLosersIntoWinnersVect(winner, looser, sizeElem);
+	
+	// Step 5: Insert the odd element if he exist
+	if (hasOdd) {
+		insertOddElementBack(winner, oddElement, sizeElem);
+	}
+	
+	// Step 6: Reconstruct the final vector
+	rebuildVector(winner);
 }
 
 //Operators overload

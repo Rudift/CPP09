@@ -21,7 +21,7 @@ int	main(int ac, char **av){
 	PmergeMe merge;
 	try{
 		merge.parsing(ac, av);
-		std::cout << "Before: " << merge.getVector() << std::endl;
+		std::cout << "Before: " << merge.getDeque() << std::endl;
 		clock_t beginVect = clock();
 		merge.sortVector();
 		clock_t endVect = clock();
