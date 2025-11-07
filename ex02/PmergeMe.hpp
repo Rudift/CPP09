@@ -43,19 +43,13 @@ class PmergeMe{
 		void	sortDeque();
 		
 		//Fonctions for sorting vector
-		std::vector<int> handleOddVector();
-		void	doPairingVect();
-		void	separateWinnersAndLosersVect(std::vector<std::vector<int> >& winner, 
-											std::vector<std::vector<int> >& looser, 
-											size_t sizeElem);
+		std::vector<int> 	handleOddVector();
+		void				doPairingVect();
+		void				separateWinnersAndLosersVect(std::vector<std::vector<int> >& winner, std::vector<std::vector<int> >& looser, size_t sizeElem);
 		std::vector<size_t> generateJacobsthalOrderVect(size_t nbElements);
-		void	insertLosersIntoWinnersVect(std::vector<std::vector<int> >& winner,
-										const std::vector<std::vector<int> >& looser,
-										size_t sizeElem);
-		void	insertOddElementBack(std::vector<std::vector<int> >& winner,
-									const std::vector<int>& oddElement,
-									size_t sizeElem);
-		void	rebuildVector(const std::vector<std::vector<int> >& winner);
+		void				insertLosersIntoWinnersVect(std::vector<std::vector<int> >& winner, const std::vector<std::vector<int> >& looser, size_t sizeElem);
+		void				insertOddVectorBack(std::vector<std::vector<int> >& winner, const std::vector<int>& oddElement, size_t sizeElem);
+		void				rebuildVector(const std::vector<std::vector<int> >& winner);
 
 		//Fonction for sorting deque
 		std::deque<int> 	handleOddDeque();
@@ -63,10 +57,14 @@ class PmergeMe{
 		void				separateWinnersAndLosersDeq(std::deque<std::deque<int> >& winner, std::deque<std::deque<int> >& looser, size_t sizeElem);
 		void				insertLosersIntoWinnersDeq(std::deque<std::deque<int> >& winner, const std::deque<std::deque<int> >& looser, size_t sizeElem);
 		std::deque<size_t>	generateJacobsthalOrderDeq(size_t nbElements);
+		size_t				binarySearchDeq(std::deque<std::deque<int> > deq, int elem, size_t nbElem);
+		void				insertOddDequeBack(std::vector<std::vector<int> >& winner, const std::vector<int>& oddElement, size_t sizeElem);
+		void				insertOddDequeBack(std::deque<std::deque<int> >& winner, const std::deque<int>& oddElement, size_t sizeElem);
+		void				rebuildDeque(const std::deque<std::deque<int> >& winner);
 
 		//Getters
-		std::vector<std::vector<int> > getVector();
-		std::deque<std::deque<int> > getDeque();
+		std::vector<std::vector<int> >	getVector();
+		std::deque<std::deque<int> >	getDeque();
 };
 
 std::deque<int> dequeiser(int nb);
@@ -77,6 +75,8 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int>& container);
 std::ostream& operator<<(std::ostream& os, const std::deque<int>& container);
 
 std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int> >& container);
+
+std::ostream& operator<<(std::ostream& os, const std::deque<std::deque<int> >& container);
 
 std::ostream& operator<<(std::ostream& os, const std::deque<std::deque<int> >& container);
 

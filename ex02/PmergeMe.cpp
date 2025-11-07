@@ -42,7 +42,11 @@ bool	isEmptyVector(const std::vector<int>& v){
 	return (v.empty());
 }
 
-size_t	binarySearch(std::vector<std::vector<int> > vect, int elem, size_t nbElem){
+bool	isEmptyDeque(const std::deque<int>& d){
+	return (d.empty());
+}
+
+size_t	binarySearchVect(std::vector<std::vector<int> > vect, int elem, size_t nbElem){
 	if (nbElem == 0)
 		return 0;
 
@@ -80,7 +84,6 @@ size_t	jacobsthalGenerator(size_t sizeElem, size_t index){
 	// Afficher le contenu du vecteur
 	for (size_t i = 0; i < sizeElem; i++)
 		if (i < sizeElem - 1) std::cout << " ";
-	std::cout << std::endl;
 	
 	if (index >= sizeElem)
 		return 0;
@@ -136,7 +139,7 @@ void PmergeMe::sortVector(){
 	
 	// Step 5: Insert the odd element if he exist
 	if (hasOdd) {
-		insertOddElementBack(winner, oddElement, sizeElem);
+		insertOddVectorBack(winner, oddElement, sizeElem);
 	}
 	
 	// Step 6: Reconstruct the final vector
@@ -237,7 +240,6 @@ std::vector<size_t> PmergeMe::generateJacobsthalOrderVect(size_t nbElements) {
 	// 	std::cout << insertionOrder[i];
 	// 	if (i < insertionOrder.size() - 1) std::cout << " ";
 	// }
-	std::cout << std::endl;
 	
 	return insertionOrder;
 }
@@ -259,18 +261,16 @@ void PmergeMe::insertLosersIntoWinnersVect(std::vector<std::vector<int> >& winne
 			}
 		}
 
-		size_t indexInsert = binarySearch(winner, looser[index][sizeElem - 1], indexWin + 1);
+		size_t indexInsert = binarySearchVect(winner, looser[index][sizeElem - 1], indexWin + 1);
 		winner.push_back(looser[index]);
 		std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
 		//std::cout << "--- Inséré élément " << index << ": " << winner << " indexWin = " << indexWin << std::endl;
 	}
 }
 
-void PmergeMe::insertOddElementBack(std::vector<std::vector<int> >& winner,
-									const std::vector<int>& oddElement,
-									size_t sizeElem) {
+void PmergeMe::insertOddVectorBack(std::vector<std::vector<int> >& winner, const std::vector<int>& oddElement, size_t sizeElem){
 	//std::cout << "reste : " << oddElement << std::endl;
-	size_t indexInsert = binarySearch(winner, oddElement[sizeElem - 1], winner.size());
+	size_t indexInsert = binarySearchVect(winner, oddElement[sizeElem - 1], winner.size());
 	winner.push_back(oddElement);
 	std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
 	//std::cout << winner << std::endl;
@@ -289,6 +289,7 @@ void PmergeMe::rebuildVector(const std::vector<std::vector<int> >& winner) {
 	// std::cout << "Vector: " << _vector << std::endl;
 }
 
+
 //===========DEQUE===========
 std::deque<int> dequeiser(int nb){
 	std::deque<int> deq;
@@ -302,9 +303,9 @@ std::deque<int> PmergeMe::handleOddDeque(){
 	
 	if (lastElem % 2 == 0 && lastElem != 0){
 		oddElement = _deque[lastElem];
-		_vector.pop_back();
+		_deque.pop_back();
 		// std::cout << "Reste: " << oddElement << std::endl;
-		// std::cout << "Vector: " << _vector << std::endl;
+		// std::cout << "Deque: " << _deque << std::endl;
 	}
 	
 	return (oddElement);
@@ -323,12 +324,12 @@ void PmergeMe::doPairingDeque(){
 		}
 	}
 	
-	_deque.erase(std::remove_if(_deque.begin(), _deque.end(), isEmptyVector), _deque.end()); // Delete the empty vectors
+	_deque.erase(std::remove_if(_deque.begin(), _deque.end(), isEmptyDeque), _deque.end()); // Delete the empty deques
 	
 	//std::cout << "Pairing: " << _vector << std::endl << std::endl;
 	
 	if (hasPaired && _deque.size() > 1)
-		this->sortVector();
+		this->sortDeque();
 }
 
 void PmergeMe::separateWinnersAndLosersDeq(std::deque<std::deque<int> >& winner, std::deque<std::deque<int> >& looser, size_t sizeElem){
@@ -390,9 +391,29 @@ std::deque<size_t> PmergeMe::generateJacobsthalOrderDeq(size_t nbElements){
 	// 	std::cout << insertionOrder[i];
 	// 	if (i < insertionOrder.size() - 1) std::cout << " ";
 	// }
-	std::cout << std::endl;
 	
 	return (insertionOrder);
+}
+
+size_t	PmergeMe::binarySearchDeq(std::deque<std::deque<int> > deq, int elem, size_t nbElem){
+	if (nbElem == 0)
+		return 0;
+
+	size_t sizeElem = deq[0].size();
+	int left = 0;
+	int right = nbElem - 1;
+	int mid = 0;
+
+	while (left <= right) {
+		mid = left + (right - left) / 2;
+
+		// Compare l'élément recherché avec le dernier élément de la ligne 'mid'
+		if (deq[mid][sizeElem - 1] < elem)
+			left = mid + 1;
+		else
+			right = mid - 1;
+	}
+	return (left);
 }
 
 void PmergeMe::insertLosersIntoWinnersDeq(std::deque<std::deque<int> >& winner, const std::deque<std::deque<int> >& looser, size_t sizeElem){
@@ -410,11 +431,40 @@ void PmergeMe::insertLosersIntoWinnersDeq(std::deque<std::deque<int> >& winner, 
 			}
 		}
 
-		size_t indexInsert = binarySearch(winner, looser[index][sizeElem - 1], indexWin + 1);
+		size_t indexInsert = binarySearchDeq(winner, looser[index][sizeElem - 1], indexWin + 1);
 		winner.push_back(looser[index]);
 		std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
 		//std::cout << "--- Inséré élément " << index << ": " << winner << " indexWin = " << indexWin << std::endl;
 	}
+}
+
+void PmergeMe::insertOddDequeBack(std::vector<std::vector<int> >& winner, const std::vector<int>& oddElement, size_t sizeElem){
+	//std::cout << "reste : " << oddElement << std::endl;
+	size_t indexInsert = binarySearchVect(winner, oddElement[sizeElem - 1], winner.size());
+	winner.push_back(oddElement);
+	std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
+	//std::cout << winner << std::endl;
+}
+
+void PmergeMe::insertOddDequeBack(std::deque<std::deque<int> >& winner, const std::deque<int>& oddElement, size_t sizeElem){
+	//std::cout << "reste : " << oddElement << std::endl;
+	size_t indexInsert = binarySearchDeq(winner, oddElement[sizeElem - 1], winner.size());
+	winner.push_back(oddElement);
+	std::rotate(winner.begin() + indexInsert, winner.end() - 1, winner.end());
+	//std::cout << winner << std::endl;
+}
+
+void PmergeMe::rebuildDeque(const std::deque<std::deque<int> >& winner){
+	_deque.clear();
+	for (size_t i = 0; i < winner.size(); i++) {
+		std::deque<int> tmp;
+		for (size_t j = 0; j < winner[i].size(); j++) {
+			tmp.push_back(winner[i][j]);
+		}
+		_deque.push_back(tmp);
+	}
+	
+	// std::cout << "Deque: " << _deque << std::endl;
 }
 
 void PmergeMe::sortDeque(){
@@ -438,15 +488,15 @@ void PmergeMe::sortDeque(){
 	separateWinnersAndLosersDeq(winner, looser, sizeElem);
 	
 	// Step 4: Use Jacobsthal to insert loosers into winners
-	insertLosersIntoWinnersVect(winner, looser, sizeElem);
+	insertLosersIntoWinnersDeq(winner, looser, sizeElem);
 	
 	// Step 5: Insert the odd element if he exist
 	if (hasOdd) {
-		insertOddElementBack(winner, oddElement, sizeElem);
+		insertOddDequeBack(winner, oddElement, sizeElem);
 	}
 	
 	// Step 6: Reconstruct the final vector
-	rebuildVector(winner);
+	rebuildDeque(winner);
 }
 
 //Operators overload

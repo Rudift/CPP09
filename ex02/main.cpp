@@ -18,16 +18,27 @@ int	main(int ac, char **av){
 		std::cerr << RED + "Error" + RESET << std::endl;
 		return (-1);
 	}
+
+	std::cout << MAGENTA << "\n\n/====== WELCOME TO PMERGEME ======/" << RESET << std::endl << std::endl;
 	PmergeMe merge;
 	try{
 		merge.parsing(ac, av);
-		std::cout << "Before: " << merge.getDeque() << std::endl;
+		std::cout << RED + "Before: " + RESET << merge.getVector() << std::endl;
+		
+		// Test with vector
 		clock_t beginVect = clock();
 		merge.sortVector();
 		clock_t endVect = clock();
 		double	timeVect = (double(endVect - beginVect) / CLOCKS_PER_SEC) * 1000000;
-		std::cout << "After: " << merge.getVector() << std::endl;
-		std::cout << "Time to process a range of " << merge.getVector().size() << " elements with std::vector: " << timeVect << "us" << std::endl;
+		std::cout << GREEN + "After: " + RESET << merge.getVector() << std::endl;
+		std::cout << YELLOW << "Time to process a range of " << RED << merge.getVector().size() << YELLOW << " elements with std::vector: "<< RED << timeVect << "us" << RESET << std::endl;
+		
+		// Test with deque
+		clock_t beginDeq = clock();
+		merge.sortDeque();
+		clock_t endDeq = clock();
+		double	timeDeq = (double(endDeq - beginDeq) / CLOCKS_PER_SEC) * 1000000;
+		std::cout << YELLOW << "Time to process a range of " << RED << merge.getDeque().size() << YELLOW << " elements with std::deque: " << RED << timeDeq << "us" << RESET << std::endl << std::endl;
 	}catch(std::exception &e){
 		std::cerr << RED << e.what() << RESET << std::endl;
 		return (-1);
