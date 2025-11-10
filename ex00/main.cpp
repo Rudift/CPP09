@@ -21,11 +21,10 @@ int	main(int ac, char **av){
 
 	BitcoinExchange data;
 	try{
-		data.loadDatabase("data.csv");
-		data.handleInput(av[1]);
+		data.loadDatabase("data.csv"); //load the database
+		data.handleInput(av[1]); //load the input and cross it with the database
 	}catch (std::exception &e){
 		std::cout << RED + e.what() + RESET << std::endl;
 	}
-
 	return (0);
 }

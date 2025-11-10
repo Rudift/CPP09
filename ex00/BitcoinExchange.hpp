@@ -31,11 +31,14 @@ class BitcoinExchange{
 		BitcoinExchange(const BitcoinExchange &other);
 		BitcoinExchange& operator=(const BitcoinExchange &other);
 		~BitcoinExchange();
+		
+		//Member fonctions
 		void	loadDatabase(std::string path);
 		void	handleInput(std::string path);
 		float	getRate(std::string date);
 };
 
+//Non-member fonctions
 bool	isValidExt(std::string ext, std::string ref);
 bool	isValidDate(std::string date);
 bool	isValidValue(float value);

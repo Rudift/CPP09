@@ -30,9 +30,9 @@ BitcoinExchange::~BitcoinExchange(){}
 
 //Member fonctions
 void	BitcoinExchange::loadDatabase(std::string path){
-	if (!isValidExt(path, "csv"))
+	if (!isValidExt(path, "csv")) //Verification of the extension of the database
 		throw std::invalid_argument("Error: wrong file extension.");
-	std::ifstream file(path.c_str());
+	std::ifstream file(path.c_str()); //Opening of the file
 	if (!file){
 		throw std::invalid_argument(path + " not found");
 	}
@@ -50,8 +50,8 @@ void	BitcoinExchange::loadDatabase(std::string path){
 }
 
 void	BitcoinExchange::handleInput(std::string path){
-	if (!isValidExt(path, "txt")) // Verification of the extension of the file
-		throw std::invalid_argument("Error: wrong file extension."); 
+	// if (!isValidExt(path, "txt")) //Verification of the extension of the file
+	// 	throw std::invalid_argument("Error: wrong file extension."); 
 
 	std::ifstream file(path.c_str());
 	if (!file)
@@ -95,7 +95,7 @@ void	BitcoinExchange::handleInput(std::string path){
 
 float	BitcoinExchange::getRate(std::string date){
 	std::map<std::string, float>::const_iterator it = _data.lower_bound(date);
-
+	
 	//Case 1 : the date exist
 	if (it != _data.end() && it->first == date)
 		return it->second;

@@ -82,7 +82,7 @@ int		doOperation(int a, int b, char op){
 			break;
 	}
 	
-	// Vérification finale que le résultat tient dans un int
+	// Checking if the result is out of int range
 	if (res > std::numeric_limits<int>::max() || res < std::numeric_limits<int>::min())
 		throw std::invalid_argument("Error: Result out of int range.");
 		
