@@ -15,7 +15,7 @@
 int	main(int ac, char **av){
 	if (ac != 2 || av[1][0] == '\0'){
 		std::cerr << RED + "<Usage>: ./RPN \"your operation in RPN\"" + RESET << std::endl;
-		return (-1);
+		return (1);
 	}
 	std::stack<int>	rpn;
 	try{
@@ -23,6 +23,7 @@ int	main(int ac, char **av){
 		std::cout << rpn.top() << std::endl;
 	}catch(std::exception &e){
 		std::cerr << RED << e.what() << RESET << std::endl;
+		return (1);
 	}
 	return (0);
 }

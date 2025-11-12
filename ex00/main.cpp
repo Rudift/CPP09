@@ -24,7 +24,8 @@ int	main(int ac, char **av){
 		data.loadDatabase("data.csv"); //load the database
 		data.handleInput(av[1]); //load the input and cross it with the database
 	}catch (std::exception &e){
-		std::cout << RED + e.what() + RESET << std::endl;
+		std::cerr << RED + e.what() + RESET << std::endl;
+		return(1);
 	}
 	return (0);
 }
