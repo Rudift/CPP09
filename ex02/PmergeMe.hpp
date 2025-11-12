@@ -13,6 +13,7 @@
 #ifndef PMERGEME_HPP
 # define PMERGEME_HPP
 
+// Standard library includes
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -56,28 +57,33 @@ class PmergeMe{
 		void				doPairingDeque();
 		void				separateWinnersAndLosersDeq(std::deque<std::deque<int> >& winner, std::deque<std::deque<int> >& looser, size_t sizeElem);
 		void				insertLosersIntoWinnersDeq(std::deque<std::deque<int> >& winner, const std::deque<std::deque<int> >& looser, size_t sizeElem);
-		std::deque<size_t>	generateJacobsthalOrderDeq(size_t nbElements);
-		size_t				binarySearchDeq(std::deque<std::deque<int> > deq, int elem, size_t nbElem);
+	std::deque<size_t>	generateJacobsthalOrderDeq(size_t nbElements);
+	size_t				binarySearchDeq(const std::deque<std::deque<int> >& deq, int elem, size_t nbElem);
 		void				insertOddDequeBack(std::vector<std::vector<int> >& winner, const std::vector<int>& oddElement, size_t sizeElem);
 		void				insertOddDequeBack(std::deque<std::deque<int> >& winner, const std::deque<int>& oddElement, size_t sizeElem);
 		void				rebuildDeque(const std::deque<std::deque<int> >& winner);
 
-		//Getters
-		std::vector<std::vector<int> >	getVector();
-		std::deque<std::deque<int> >	getDeque();
-};
+		/**
+		 * PmergeMe
+		 * --------
+		 * Small class implementing a pairwise merge-sort variant (Pmerge).
+		 * It stores the input numbers as containers of size-1 vectors/deques
+		 * and performs pairing, winner/looser separation and insertion using a
+		 * Jacobsthal-based order. The class provides both vector and deque
+		 * implementations for comparison.
+		 */
+
+		// Getters: return const references to avoid copying large containers
+		const std::vector<std::vector<int> >&    getVector() const;
+		const std::deque<std::deque<int> >&    getDeque() const;
+	};
 
 std::deque<int> dequeiser(int nb);
 
-//Operators overload
+// Operators overload for printing containers (defined in PmergeMe.cpp)
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& container);
-
 std::ostream& operator<<(std::ostream& os, const std::deque<int>& container);
-
 std::ostream& operator<<(std::ostream& os, const std::vector<std::vector<int> >& container);
-
-std::ostream& operator<<(std::ostream& os, const std::deque<std::deque<int> >& container);
-
 std::ostream& operator<<(std::ostream& os, const std::deque<std::deque<int> >& container);
 
 #endif
