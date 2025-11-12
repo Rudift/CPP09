@@ -66,29 +66,6 @@ size_t	binarySearchVect(const std::vector<std::vector<int> >& vect, int elem, si
 	return (left);
 }
 
-size_t	jacobsthalGenerator(size_t sizeElem, size_t index){
-	std::vector<size_t> jacobSequence(sizeElem);
-
-	if (sizeElem == 0)
-		return 0;
-	jacobSequence[0] = 0;
-	if (sizeElem == 1)
-		return (jacobSequence[0]);
-	
-	jacobSequence[1] = 1;
-	for (size_t i = 2 ; i < sizeElem ; i++){
-		jacobSequence[i] = jacobSequence[i - 1] + 2 * jacobSequence[i - 2];
-	}
-	
-	// Display the content of the vector
-	for (size_t i = 0; i < sizeElem; i++)
-		if (i < sizeElem - 1) std::cout << " ";
-	
-	if (index >= sizeElem)
-		return 0;
-	return (jacobSequence[index]);
-}
-
 PmergeMe::~PmergeMe(){}
 
 //Member fonction
